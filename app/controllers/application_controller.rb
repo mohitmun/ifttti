@@ -18,17 +18,25 @@ class ApplicationController < ActionController::Base
     response.body
     result = JSON.parse(response.body)
     
+    render json: {message: "ok"}, status: 200
+    puts "wowow: #{params}"
+    `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/#{result["title"]}.%(ext)s' '#{params['url']}'`
+
     url = URI(@ifttt_maker_post_link_youtube)
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/json'
-    request.body = {"value1": result["link"], "value2": result["title"]}.to_json
+    file_url = root_url + "#{URI.escape(result["title"])}.mp3"
+    puts "*"*100
+    puts "root: #{file_url}"
+    puts "*"*100
+    request.body = {"value1": file_url, "value2": result["title"]}.to_json
     response = http.request(request)
-    render json: {message: "ok"}, status: 200
-    puts "wowow: #{params}"
-    `youtube-dl --extract-audio --audio-format mp3 '#{params['url']}'`
+  end
+
+  def index
 
   end
 end
