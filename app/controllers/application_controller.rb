@@ -10,9 +10,6 @@ class ApplicationController < ActionController::Base
 
 
   def youtube_liked
-    puts "==="*50
-    puts "url : #{params['url']}"
-    puts "==="*50
     url = URI("http://www.youtubeinmp3.com/fetch/?format=JSON&video=#{params['url']}")
     http = Net::HTTP.new(url.host, url.port)
     request = Net::HTTP::Get.new(url)
