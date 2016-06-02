@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   def youtube_liked
     receipe = Receipe.create(content: {extract_and_send: {title: params["title"], url: params["url"]}})
-    receipe.delay.extract_and_send
+    receipe.delay.extract_and_send(root_url)
     render json: {message: "ok"}, status: 200
   end
 

@@ -9,12 +9,12 @@ class Receipe < ActiveRecord::Base
   end
 
 
-  def extract_and_send
-    file_name = Random.rand(100)
+  def extract_and_send(root_url)
+    file_name = 79
     data = content[:extract_and_send]
-    `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/#{file_name}.%(ext)s' '#{data[:url]}'`
+    # `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/#{file_name}.%(ext)s' '#{data[:url]}'`
     #Test `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/test.%(ext)s' https://www.youtube.com/watch?v=foE1mO2yM04`
-    url = URI(IFTTT_MAKER_POST_LINK_YOUTUBE)
+    url = URI(Receipe::IFTTT_MAKER_POST_LINK_YOUTUBE)
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
