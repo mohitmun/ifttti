@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   # protect_from_forgery with: :exception
 
   def youtube_liked
+    params.permit!
     receipe = Receipe.create(content: {extract_and_send: {title: params["title"], url: params["url"]}})
     receipe.delay.extract_and_send(root_url)
     render json: {message: "ok"}, status: 200
