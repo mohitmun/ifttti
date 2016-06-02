@@ -10,7 +10,7 @@ class Receipe < ActiveRecord::Base
 
 
   def extract_and_send(root_url)
-    file_name = 79
+    file_name = Random.rand(100)
     data = content[:extract_and_send]
     # `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/#{file_name}.%(ext)s' '#{data[:url]}'`
     #Test `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/test.%(ext)s' https://www.youtube.com/watch?v=foE1mO2yM04`
