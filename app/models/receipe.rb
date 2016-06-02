@@ -22,7 +22,7 @@ class Receipe < ActiveRecord::Base
       additional_params = "-f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4'"
       ext = "mp4"
     end
-    `youtube-dl #{additional_params} -o '#{Rails.root}/public/#{file_name}.%(ext)s' '#{data[:url]}'`
+    `youtube-dl #{additional_params} -o '#{Rails.root}/tmp/#{file_name}.%(ext)s' '#{data[:url]}'`
     #Test `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/test.%(ext)s' https://www.youtube.com/watch?v=foE1mO2yM04`
     url = URI(Receipe::IFTTT_MAKER_POST_LINK_YOUTUBE)
     http = Net::HTTP.new(url.host, url.port)

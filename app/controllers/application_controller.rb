@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   def file
     params.permit!
     file_name = params["name"]
-    send_file("#{Rails.root}/public/#{file_name}")
+    send_file("#{Rails.root}/tmp/#{file_name}")
   end
 
   def index
