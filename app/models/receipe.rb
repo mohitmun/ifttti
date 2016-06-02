@@ -2,9 +2,9 @@ class Receipe < ActiveRecord::Base
 
   IFTTT_MAKER_POST_LINK_YOUTUBE = "https://maker.ifttt.com/trigger/youtube_video_file_link/with/key/cQCRNcVBFKNs9Bl6u6OLvE"
 
-  after_initialize :initialize
+  after_initialize :init
 
-  def initialize
+  def init
     content.deep_symbolize_keys!
   end
 
