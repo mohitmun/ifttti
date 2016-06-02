@@ -12,7 +12,15 @@ class Receipe < ActiveRecord::Base
   def extract_and_send(root_url)
     file_name = Random.rand(100)
     data = content[:extract_and_send]
-    # `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/#{file_name}.%(ext)s' '#{data[:url]}'`
+    json_info = JSON.parse(`youtube-dl -j #{data[:url]}`)
+    if json_info["categories"].include?("Music")
+      puts "Music video detected"
+      additional_params = "--extract-audio --audio-format mp3"
+    else
+      puts "Downloading video in mp4 format"
+      additional_params = "-f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4'"
+    end
+    `youtube-dl #{additional_params} -o '#{Rails.root}/public/#{file_name}.%(ext)s' '#{data[:url]}'`
     #Test `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/test.%(ext)s' https://www.youtube.com/watch?v=foE1mO2yM04`
     url = URI(Receipe::IFTTT_MAKER_POST_LINK_YOUTUBE)
     http = Net::HTTP.new(url.host, url.port)
