@@ -10,6 +10,12 @@ class ApplicationController < ActionController::Base
     render json: {message: "ok"}, status: 200
   end
 
+  def file
+    params.permit!
+    file_name = params["name"]
+    send_file("#{Rails.root}/public/#{file_name}")
+  end
+
   def index
     
   end
