@@ -1,3 +1,4 @@
+require "google_drive"
 class Receipe < ActiveRecord::Base
 
   IFTTT_MAKER_POST_LINK_YOUTUBE = "https://maker.ifttt.com/trigger/youtube_video_file_link/with/key/cQCRNcVBFKNs9Bl6u6OLvE"
@@ -24,18 +25,26 @@ class Receipe < ActiveRecord::Base
     end
     `youtube-dl #{additional_params} -o '#{Rails.root}/tmp/#{file_name}.%(ext)s' '#{data[:url]}'`
     #Test `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/test.%(ext)s' https://www.youtube.com/watch?v=foE1mO2yM04`
-    url = URI(Receipe::IFTTT_MAKER_POST_LINK_YOUTUBE)
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Post.new(url)
-    request["content-type"] = 'application/json'
-    file_url = root_url + "file?name=#{file_name}.#{ext}"
-    puts "*"*100
-    puts "root: #{file_url}"
-    puts "*"*100
-    request.body = {"value1": file_url, "value2": data[:title]}.to_json
-    response = http.request(request)
+    session = get_gdrive_session
+    file = session.upload_from_file("#{Rails.root}/tmp/#{file_name}.#{ext}", "#{file_name}.#{ext}", convert: false)
+    file.acl.push({ scope_type: 'anyone', with_key: true, role: 'reader' })
+    response = RestClient.post Receipe::IFTTT_MAKER_POST_LINK_YOUTUBE, {"value1": file.api_file.web_content_link, "value2": data[:title]}.to_json, :content_type => :json, :accept => :json
+    #http.request(request)
+  end
+
+  def get_gdrive_session
+    credentials = Google::Auth::UserRefreshCredentials.new(
+    client_id: "452925651630-egr1f18o96acjjvphpbbd1qlsevkho1d.apps.googleusercontent.com",
+    client_secret: "1U3-Krii5x1oLPrwD5zgn-ry",
+    scope: [
+         "https://www.googleapis.com/auth/drive",
+         "https://spreadsheets.google.com/feeds/",
+       ],
+    redirect_uri: "http://ifttti.herokuapp.com")
+    auth_url = credentials.authorization_uri
+    credentials.refresh_token = ENV["REFRESH_TOKEN"]
+    credentials.fetch_access_token!
+    session = GoogleDrive.login_with_oauth(credentials)
   end
 
 end
