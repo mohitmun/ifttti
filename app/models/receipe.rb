@@ -11,9 +11,9 @@ class Receipe < ActiveRecord::Base
 
 
   def extract_and_send(root_url)
-    file_name = Random.rand(100)
     data = content[:extract_and_send]
     json_info = JSON.parse(`youtube-dl -j #{data[:url]}`)
+    file_name = json_info["fulltitle"]
     if json_info["categories"].include?("Music")
       puts "Music video detected"
       additional_params = "--extract-audio --audio-format mp3"
