@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.2.4'
+ruby '2.2.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5.1'
@@ -9,6 +9,7 @@ gem 'delayed_job_active_record'
 gem 'sass-rails', '~> 5.0'
 gem 'google_drive', git: 'https://github.com/mohitmun/google-drive-ruby.git', branch: "master"
 gem 'goodreads'
+gem 'devise'
 gem 'rails_12factor'
 gem 'rest-client', '>= 1.7.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -44,7 +45,8 @@ end
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
-
+  gem "better_errors"
+  gem "binding_of_caller"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
