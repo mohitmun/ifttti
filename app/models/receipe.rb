@@ -11,7 +11,7 @@ class Receipe < ActiveRecord::Base
   end
 
 
-  def extract_and_send(root_url)
+  def extract_and_send
     data = content[:extract_and_send]
     json_info = JSON.parse(`youtube-dl -j #{data[:url]}`)
     file_name = json_info["fulltitle"]
@@ -41,13 +41,13 @@ class Receipe < ActiveRecord::Base
 
   def get_gdrive_session
     credentials = Google::Auth::UserRefreshCredentials.new(
-    client_id: "452925651630-egr1f18o96acjjvphpbbd1qlsevkho1d.apps.googleusercontent.com",
-    client_secret: "1U3-Krii5x1oLPrwD5zgn-ry",
+    client_id: "787759552043-jf4erg7797stgn0td73iq54j78o6mrii.apps.googleusercontent.com",
+    client_secret: "E3O4mK47Fu9Ykx9q7OOTTQAi",
     scope: [
          "https://www.googleapis.com/auth/drive",
          "https://spreadsheets.google.com/feeds/",
        ],
-    redirect_uri: "http://ifttti.herokuapp.com")
+    redirect_uri: "http://ifttti.herokuapp.com/oauth2/callback")
     auth_url = credentials.authorization_uri
     credentials.refresh_token = ENV["REFRESH_TOKEN"]
     credentials.fetch_access_token!
