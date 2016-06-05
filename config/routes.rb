@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -9,6 +10,10 @@ Rails.application.routes.draw do
   #   get 'products/:id' => 'catalog#view'
    root :to => "application#index"
   get '/file' => 'application#file'
+  get '/connect/goodreads' => 'application#connect_goodreads'
+  get '/connect/google' => 'application#connect_google'
+  get '/oauth/callback/goodreads' => 'application#oauth_callback_goodreads'
+  get '/oauth2/callback/google' => 'application#oauth2_callback_google'
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase
 
