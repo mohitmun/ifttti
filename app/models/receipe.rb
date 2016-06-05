@@ -4,10 +4,11 @@ class Receipe < ActiveRecord::Base
   IFTTT_MAKER_POST_LINK_YOUTUBE = "https://maker.ifttt.com/trigger/youtube_video_file_link/with/key/cQCRNcVBFKNs9Bl6u6OLvE"
 
   after_initialize :init
+  belongs_to :user
 
   def init
     content.deep_symbolize_keys!
-    @session = get_gdrive_session
+    @session = user.get_gdrive_session
   end
 
 
@@ -38,20 +39,4 @@ class Receipe < ActiveRecord::Base
     end
     return file
   end
-
-  def get_gdrive_session
-    credentials = Google::Auth::UserRefreshCredentials.new(
-    client_id: "787759552043-jf4erg7797stgn0td73iq54j78o6mrii.apps.googleusercontent.com",
-    client_secret: "E3O4mK47Fu9Ykx9q7OOTTQAi",
-    scope: [
-         "https://www.googleapis.com/auth/drive",
-         "https://spreadsheets.google.com/feeds/",
-       ],
-    redirect_uri: "http://ifttti.herokuapp.com/oauth2/callback")
-    auth_url = credentials.authorization_uri
-    credentials.refresh_token = ENV["REFRESH_TOKEN"]
-    credentials.fetch_access_token!
-    GoogleDrive.login_with_oauth(credentials)
-  end
-
 end
