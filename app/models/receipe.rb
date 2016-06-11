@@ -8,9 +8,14 @@ class Receipe < ActiveRecord::Base
 
   def init
     content.deep_symbolize_keys!
-    @session = user.get_gdrive_session
   end
 
+  def set_log(new_log)
+    logs = content[:logs] || []
+    logs << new_log
+    self.content[:logs] = logs
+    self.save
+  end
 
   def extract_and_send
     data = content[:extract_and_send]
@@ -27,16 +32,9 @@ class Receipe < ActiveRecord::Base
     end
     `youtube-dl #{additional_params} -o '#{Rails.root}/tmp/#{file_name}.%(ext)s' '#{data[:url]}'`
     #Test `youtube-dl --extract-audio --audio-format mp3 -o '#{Rails.root}/public/test.%(ext)s' https://www.youtube.com/watch?v=foE1mO2yM04`
-    file = upload_to_drive("#{Rails.root}/tmp/#{file_name}.#{ext}", "#{file_name}.#{ext}", "DriveSyncFiles")
+    file = user.upload_to_drive("#{Rails.root}/tmp/#{file_name}.#{ext}", "#{file_name}.#{ext}", "Youtube Downloads")
     response = RestClient.post Receipe::IFTTT_MAKER_POST_LINK_YOUTUBE, {"value1": file.api_file.web_content_link, "value2": data[:title]}.to_json, :content_type => :json, :accept => :json
+    set_log("IFTTT_MAKER_POST_LINK_YOUTUBE response: #{response}")
     #http.request(request)
-  end
-
-  def upload_to_drive(local_path, file_name, remote_folder = nil, public = true)
-    file = @session.upload_from_file(local_path, file_name, remote_folder)
-    if public
-      file.acl.push({ scope_type: 'anyone', with_key: true, role: 'reader' })
-    end
-    return file
   end
 end

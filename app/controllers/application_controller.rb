@@ -2,6 +2,14 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
+  before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google]
+
+  def login_if_not
+    if !user_signed_in?
+      session[:redirect_to] = request.path
+      redirect_to "/connect/google"
+    end
+  end
 
   def youtube_liked
     params.permit!
@@ -15,6 +23,7 @@ class ApplicationController < ActionController::Base
     consumer = OAuth::Consumer.new(ENV["GOODREADS_KEY"],ENV["GOODREADS_SECRET"],site: "http://www.goodreads.com")
     request_token = consumer.get_request_token
     session[:request_token] = request_token
+    session[:token] = request_token.token
     session[:token_secret] = request_token.secret
     redirect_to request_token.authorize_url(:oauth_callback => callback_url)
   end
@@ -31,9 +40,11 @@ class ApplicationController < ActionController::Base
       ENV["GOODREADS_SECRET"],
       site: "http://www.goodreads.com"
     )
-    request_token  = OAuth::RequestToken.from_hash(consumer, session[:request_token])
+    request_token  = OAuth::RequestToken.from_hash(consumer, hash)
     access_token = request_token.get_access_token
     client = Goodreads.new(oauth_token: access_token)
+    current_user.content[:goodreads].merge!(access_token_hash: {oauth_token: access_token.token, oauth_token_secret: access_token.secret})
+    current_user.save
   end
 
   def oauth2_callback_google
@@ -42,7 +53,11 @@ class ApplicationController < ActionController::Base
     credentials.fetch_access_token!
     user = User.save_from_google_user(credentials)
     sign_in(:user, user)
-    redirect_to root_url
+    if session[:redirect_to]
+      redirect_to session[:redirect_to]
+    else
+      redirect_to root_url
+    end
   end
 
   def file

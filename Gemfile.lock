@@ -1,6 +1,6 @@
 GIT
-  remote: https://github.com/mohitmun/google-drive-ruby.git
-  revision: 687b201f4f6ca2893c1f36cd67fe17c0e7035f70
+  remote: https://github.com/gimite/google-drive-ruby.git
+  revision: 25fbff05169329548d519a64cdba5044e064c7b5
   branch: master
   specs:
     google_drive (2.0.1)
@@ -95,7 +95,7 @@ GEM
       i18n (~> 0.5)
       oauth (~> 0.4)
       rest-client (~> 1.6)
-    google-api-client (0.9.8)
+    google-api-client (0.9.9)
       addressable (~> 2.3)
       googleauth (~> 0.5)
       httpclient (~> 2.7)
