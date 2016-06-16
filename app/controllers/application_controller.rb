@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
-  before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google]
+  before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google, :youtube_liked]
 
   def login_if_not
     if !user_signed_in?
