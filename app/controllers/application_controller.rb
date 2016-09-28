@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
     title = params[:title]
     content = params[:content]
     link = params[:link]
-    RestClient.post("https://api.telegram.org/bot287297665:AAGf5sJQeRa_l8-JGre-GkwTtaXV-3IDGH4/sendMessage", {"chat_id": 230551077, "text": "*#{title}*\n#{content} \\\\\"[link](#{link})", parse_mode: "Markdown", disable_web_page_preview: true})
+    RestClient.post("https://api.telegram.org/bot287297665:AAGf5sJQeRa_l8-JGre-GkwTtaXV-3IDGH4/sendMessage", {"chat_id": 230551077, "text": "*#{title}*\n#{content} [link](#{link})", parse_mode: "Markdown", disable_web_page_preview: true})
     head :ok
   end
 
