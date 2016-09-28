@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
    root :to => "application#index"
+  post '/send_to_telegram' => 'application#send_to_telegram'
   get '/file' => 'application#file'
   get '/connect/goodreads' => 'application#connect_goodreads'
   get '/connect/google' => 'application#connect_google'

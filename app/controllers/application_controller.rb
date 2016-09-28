@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   # protect_from_forgery with: :exception
-  before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google, :youtube_liked]
+  before_filter :login_if_not, :except => [:connect_google, :oauth2_callback_google, :youtube_liked, :send_to_telegram]
 
   def login_if_not
     if !user_signed_in?
@@ -58,6 +58,14 @@ class ApplicationController < ActionController::Base
     else
       redirect_to root_url
     end
+  end
+
+  def send_to_telegram
+    title = params[:title]
+    content = params[:content]
+    link = params[:link]
+    RestClient.post("https://api.telegram.org/bot287297665:AAGf5sJQeRa_l8-JGre-GkwTtaXV-3IDGH4/sendMessage", {"chat_id": 230551077, "text": "*#{title}*\n#{content} \\\\\"[link](#{link})", parse_mode: "Markdown", disable_web_page_preview: true})
+    head :ok
   end
 
   def file
